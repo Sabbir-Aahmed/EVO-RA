@@ -1,0 +1,18 @@
+{% include 'partials/nav.html' %}
+
+<div class="max-w-4xl mx-auto p-6 mt-10 bg-white shadow rounded-lg">
+  <h2 class="text-2xl font-bold mb-6">Category List</h2>
+
+  <ul class="space-y-2">
+    {% for category in categories %}
+      <li class="border p-4 rounded">
+        <strong>{{ category.name }}</strong><br />
+        <span class="text-sm text-gray-600">{{ category.description }}</span>
+      </li>
+    {% empty %}
+      <li>No categories found.</li>
+    {% endfor %}
+  </ul>
+</div>
+
+{% include 'partials/footer.html' %}
