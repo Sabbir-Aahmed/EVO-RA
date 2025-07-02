@@ -3,7 +3,6 @@ from django.urls import path
 from django.views.generic import RedirectView
 from events.views import home,footer,base,dashboard,event_detail,event_list,event_create,event_update,event_delete,participant_create,category_create,category_list,participant_list
 urlpatterns = [
-    path('admin/', admin.site.urls),
     path('home/',home, name="home"),
     path('base/',base),
     path('footer/',footer),
