@@ -3,6 +3,13 @@ from events.models import Event, Participant, Catagory
 from django.forms.widgets import CheckboxSelectMultiple
 
 class StyledFormMixing:
+    
+    '''widget using mixing'''
+    def __init__(self,*args, **kwargs):
+        super().__init__(*args,**kwargs)
+        self.apply_styled_widgets()
+
+
     default_classes = "w-full mt-2 px-4 py-2 mb-4 border-2 bg-gray-100  rounded-lg "
 
     def apply_styled_widgets(self):
@@ -62,7 +69,7 @@ class EventForm(StyledFormMixing, forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.apply_styled_widgets()
 
-        if self.instance.pk:
+        if self.instance.id:
             self.fields['participants'].initial = self.instance.participants.all()
 
     def save(self, commit=True):
@@ -89,18 +96,18 @@ class ParticipantForm(StyledFormMixing, forms.ModelForm):
             'events': forms.CheckboxSelectMultiple
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.apply_styled_widgets()
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.apply_styled_widgets()
 
 class CatagoryForm(StyledFormMixing, forms.ModelForm):
     class Meta:
         model = Catagory
         fields = ['name', 'description']
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.apply_styled_widgets()
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.apply_styled_widgets()
 
     def clean_name(self):
         name = self.cleaned_data.get('name')

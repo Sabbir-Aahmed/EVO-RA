@@ -7,4 +7,5 @@ urlpatterns = [
     path('', RedirectView.as_view(url='/events/home/', permanent=True)),
     path('admin/', admin.site.urls),
     path('events/', include('events.urls')),
+    path('user/', include('user.urls')),
 ]+debug_toolbar_urls()
