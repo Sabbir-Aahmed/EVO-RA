@@ -30,3 +30,8 @@ def sign_in(request):
             login(request,user)
             return redirect('home')
     return render(request, 'registration/sign-in.html',{'form':form})
+
+def sign_out(request):
+    if request.method == 'POST':
+        logout(request)
+        return redirect(sign_in)

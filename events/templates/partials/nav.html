@@ -1,43 +1,87 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width,
-        initial-scale=1.0"
-    />
-    <title>EVORA</title>
-    <link rel="stylesheet" href="{% static "CSS/output.css" %}">
-  </head>
-  <body>
-    <nav
-      class="bg-white shadow-md px-4 md:px-24 py-4 flex items-center justify-between"
-    >
-      <div class="text-3xl md:text-5xl font-bold text-orange-500 ">Evora</div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Evora</title>
+  <link rel="stylesheet" href="{% static 'CSS/output.css' %}">
+</head>
+<body class="bg-gray-100 font-sans">
 
-      <div class="flex items-center gap-x-3 md:gap-x-6 text-sm md:text-base">
-        <a
-          href="{% url 'home' %}"
-          class="text-gray-600 hover:text-orange-600 font-medium"
-          >HOME</a
-        >
-        <a
-          href="{% url 'event_list' %}"
-          class="text-gray-600 hover:text-orange-600 font-medium"
-          >EVENTS</a
-        >
-        <a
-          href="{% url 'dashboard' %}"
-          class="text-gray-600 hover:text-orange-600 font-medium"
-          >DASHBOARD</a
-        >
-        <a href="" class="text-gray-600 hover:text-orange-600 font-medium"
-          >STORY</a
-        >
+  
+  <nav class="bg-white shadow-md px-4 sm:px-6 md:px-24 py-4">
+    <div class="flex items-center justify-between">
+      
+      <a href="{% url 'home' %}"class="text-3xl md:text-5xl font-bold text-orange-500">Evora</a>
+
+      
+      <div class="hidden md:flex items-center gap-x-6 text-sm md:text-base">
+        <a href="{% url 'home' %}" class="text-gray-600 hover:text-orange-600 font-medium">HOME</a>
+        <a href="{% url 'event_list' %}" class="text-gray-600 hover:text-orange-600 font-medium">EVENTS</a>
+        <a href="{% url 'dashboard' %}" class="text-gray-600 hover:text-orange-600 font-medium">DASHBOARD</a>
+        <a href="#" class="text-gray-600 hover:text-orange-600 font-medium">GROUPS</a>
+        <a href="#" class="text-gray-600 hover:text-orange-600 font-medium">CREATE GROUP</a>
       </div>
-    </nav>
-  </body>
+
+      
+      <div class="flex items-center md:gap-x-4">
+        {% comment %} Avatar Dropdown {% endcomment %}
+        <div class="relative">
+          <button id="user-menu-button" class="focus:outline-none">
+            <img
+              class="h-8 w-8 rounded-full object-cover"
+              src="https://placekitten.com/100/100"
+              alt="User avatar"
+            />
+          </button>
+          <div id="user-menu" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden z-20">
+            <a href="{% url 'dashboard' %}" class="block px-4 py-2 text-sm text-orange-700 hover:bg-gray-100">Dashboard</a>
+             <form method="post" action="{% url 'sign-out' %}">
+              {% csrf_token %}
+              <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</button>
+            </form> 
+          </div>
+        </div>
+
+        {% comment %} Hamburger Button for Mobile {% endcomment %}
+        <button id="menu-toggle" class="md:hidden ml-4 text-gray-600 hover:text-gray-800 focus:outline-none">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 6h16M4 12h16m-7 6h7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+     {% comment %} Mobile Nav Items {% endcomment %}
+    <div id="mobile-menu" class="md:hidden hidden mt-4 space-y-2">
+      <a href="{% url 'home' %}" class="block text-gray-600 hover:text-orange-600 font-medium">HOME</a>
+      <a href="{% url 'event_list' %}" class="block text-gray-600 hover:text-orange-600 font-medium">EVENTS</a>
+      <a href="{% url 'dashboard' %}" class="block text-gray-600 hover:text-orange-600 font-medium">DASHBOARD</a>
+      <a href="#" class="block text-gray-600 hover:text-orange-600 font-medium">GROUPS</a>
+      <a href="#" class="block text-gray-600 hover:text-orange-600 font-medium">CREATE GROUP</a>
+    </div>
+  </nav>
+
+  
+  <script>
+    document.getElementById("menu-toggle").addEventListener("click", function () {
+      document.getElementById("mobile-menu").classList.toggle("hidden");
+    });
+    document.getElementById("user-menu-button").addEventListener("click", function () {
+      document.getElementById("user-menu").classList.toggle("hidden");
+    });
+
+    document.addEventListener("click", function (event) {
+      const userMenu = document.getElementById("user-menu");
+      const avatarBtn = document.getElementById("user-menu-button");
+
+      if (!avatarBtn.contains(event.target) && !userMenu.contains(event.target)) {
+        userMenu.classList.add("hidden");
+      }
+    });
+  </script>
+
+</body>
 </html>

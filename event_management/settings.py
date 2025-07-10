@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'events',
     'debug_toolbar',
     'user',
+    'core',
 ]
 
 MIDDLEWARE = [
