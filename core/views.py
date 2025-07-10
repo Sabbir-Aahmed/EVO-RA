@@ -1,3 +1,4 @@
 from django.shortcuts import render
 
-# Create your views here.
+def non_logged_home(request):
+    return render(request, 'non-logged-home.html')
