@@ -1,4 +1,4 @@
-
+from decouple import config
 import dj_database_url
 from pathlib import Path
 
@@ -87,8 +87,8 @@ WSGI_APPLICATION = 'event_management.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        # Replace this value with your local database's connection string.
-        default='postgresql://event_management_db_cw9k_user:fq5xrHD4VpNWs9lEVqs38Eoxegxk8JwP@dpg-d1ijb5qdbo4c73f9akb0-a.oregon-postgres.render.com/event_management_db_cw9k',
+        
+        default=config('DATABASE_URL'),
         conn_max_age=600
     )
 }
@@ -140,3 +140,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 INTERNAL_IPS = [
     '127.0.0.1',
 ]
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT', cast=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+
+FRONTEND_URL = 'http://127.0.0.1:8000'
+
+LOGIN_URL = 'sign-in'
