@@ -1,0 +1,59 @@
+{% load static %}
+{% include 'partials/nav.html' %}
+
+<div class="px-4 sm:px-6 md:px-8 mx-auto max-w-4xl">
+    <div class="max-w-lg mx-auto my-10 p-8 bg-white shadow-md rounded-md">
+  
+        {% if messages %}
+            <ul class="mb-6">
+            {% for message in messages %}
+                <li class="bg-green-500 text-white px-4 py-2 rounded mb-2">{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+
+        <h2 class="text-3xl font-semibold mb-6 text-gray-800">Create New Group</h2>
+
+        <form method="POST" >
+            {% csrf_token %}
+            <div class="space-y-6">
+
+            {% comment %} Name field {% endcomment %}
+            <div>
+                <label for="{{ form.name.id_for_label }}" class="block text-gray-700 font-medium mb-1">Group Name</label>
+                <input
+                type="text"
+                name="{{ form.name.html_name }}"
+                id="{{ form.name.id_for_label }}"
+                value="{{ form.name.value|default_if_none:'' }}"
+                class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                {% if form.name.errors %}
+                <p class="text-red-600 text-sm mt-1">{{ form.name.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Permissions field -->
+            <div>
+                <label class="block text-gray-700 font-medium mb-2">Assign Permissions</label>
+                <div class="grid grid-cols-1 gap-2 max-h-64 overflow-y-auto border border-gray-300 rounded p-3">
+                {{ form.permissions }}
+                </div>
+                {% if form.permissions.errors %}
+                <p class="text-red-600 text-sm mt-1">{{ form.permissions.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Submit button -->
+            <div>
+                <button type="submit" 
+                class="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded transition">
+                Create Group
+                </button>
+            </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+{% include 'partials/footer.html' %}

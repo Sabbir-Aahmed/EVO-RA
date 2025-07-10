@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
-from user.forms import CustomRegisterForm, LoginForm
+from user.forms import CustomRegisterForm, LoginForm, AssignedRoleForm, CreateGroupForm
 from django.contrib import messages
 from django.contrib.auth import login,logout
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.models import User, Group
-
+from django.db.models import Prefetch
 
 def sign_up(request):
     if request.method == 'GET':
@@ -51,3 +51,55 @@ def activate_user(request, user_id, token):
             return HttpResponse('Invalid Id or token')
     except User.DoesNotExist:
         return HttpResponse('User not found')
+    
+
+def admin_dashboard(request):
+    users = User.objects.prefetch_related(
+        Prefetch('groups', queryset=Group.objects.all(), to_attr='all_groups')
+    ).all()
+
+    for user in users :
+        if user.all_groups:
+            user.group_name = user.all_groups[0].name
+        else:
+            user.group_name = 'No Group Assigned'
+    return render(request, 'dashboard.html', {'users': users})
+
+
+def assigned_role(request, id):
+    form = AssignedRoleForm()
+    user = get_object_or_404(User, id=id)  # safer than User.objects.get()
+
+    if request.method == 'POST':
+        form = AssignedRoleForm(request.POST)
+        if form.is_valid():
+            role = form.cleaned_data.get('role')
+            user.groups.clear()
+            user.groups.add(role)
+            messages.success(request, f'{user.username} has been assigned to the {role.name} role.')
+            return redirect('dashboard')
+
+    return render(request, 'admin/assign_role.html', {'form': form, 'user': user})
+
+def create_group(request):
+    form = CreateGroupForm()
+    if request.method == 'POST':
+        form = CreateGroupForm(request.POST)
+
+        if form.is_valid():
+            group = form.save()
+            messages.success(request, f'Group {group.name} has been created successfully')
+            return redirect('create-group')
+    return render(request, 'admin/create_group.html', {'form':form})
+
+def group_list(request):
+    groups = Group.objects.prefetch_related('permissions').all()
+
+    return render(request,'admin/group_list.html',{'groups':groups})
+
+def delete_group(request, id):
+    group = get_object_or_404(Group, id=id)
+    group_name = group.name
+    group.delete()
+    messages.success(request, f'Group "{group_name}" has been deleted successfully.')
+    return redirect('group-list')

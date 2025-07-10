@@ -144,14 +144,9 @@ def event_delete(request, id):
     event = get_object_or_404(Event, id=id)
 
     if request.method == "POST":
-        participants = Participant.objects.filter(events=event)
-        for participant in participants:
-            participant.events.remove(event)
-            if participant.events.count() == 0:
-                participant.delete()
         event.delete()
 
-        messages.success(request, "Event and its related participants deleted successfully.")
+        messages.success(request, "Event deleted successfully.")
         return redirect('dashboard')
 
 def participant_create(request):
@@ -160,6 +155,13 @@ def participant_create(request):
         form.save()
         return redirect('participant_list')
     return render(request, 'participants/participant_form.html', {'form': form})
+
+def participant_delete(request, id):
+    if request.method == "POST":
+        participant = get_object_or_404(Participant, id=id)
+        participant.delete()
+        messages.success(request, "Participant deleted successfully.")
+    return redirect('participant_list')
 
 def participant_list(request):
     participants = Participant.objects.all()
@@ -171,6 +173,13 @@ def category_create(request):
         form.save()
         return redirect('category_list')
     return render(request, 'categories/category_form.html', {'form': form})
+
+def delete_catagory(request, id):
+    cat = get_object_or_404(Catagory, id=id)
+    if request.method == 'POST':
+        cat.delete()
+        messages.success(request, 'Category deleted successfully.')
+    return redirect('category_list')
 
 def category_list(request):
     categories = Catagory.objects.all()

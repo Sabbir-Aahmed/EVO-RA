@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Evora</title>
   <link rel="stylesheet" href="{% static 'CSS/output.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body class="bg-gray-100 font-sans">
@@ -18,8 +19,8 @@
         <a href="{% url 'home' %}" class="text-gray-600 hover:text-orange-600 font-medium">HOME</a>
         <a href="{% url 'event_list' %}" class="text-gray-600 hover:text-orange-600 font-medium">EVENTS</a>
         <a href="{% url 'dashboard' %}" class="text-gray-600 hover:text-orange-600 font-medium">DASHBOARD</a>
-        <a href="#" class="text-gray-600 hover:text-orange-600 font-medium">GROUPS</a>
-        <a href="#" class="text-gray-600 hover:text-orange-600 font-medium">CREATE GROUP</a>
+        <a href="{% url "group-list" %}" class="text-gray-600 hover:text-orange-600 font-medium">GROUPS</a>
+        <a href="{% url "create-group" %}" class="text-gray-600 hover:text-orange-600 font-medium">CREATE GROUP</a>
       </div>
 
       
@@ -27,14 +28,10 @@
         {% comment %} Avatar Dropdown {% endcomment %}
         <div class="relative">
           <button id="user-menu-button" class="focus:outline-none">
-            <img
-              class="h-8 w-8 rounded-full object-cover"
-              src="https://placekitten.com/100/100"
-              alt="User avatar"
-            />
+            <i class="fa-solid fa-user text-orange-500"></i>
           </button>
           <div id="user-menu" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden z-20">
-            <a href="{% url 'dashboard' %}" class="block px-4 py-2 text-sm text-orange-700 hover:bg-gray-100">Dashboard</a>
+            <a href="{% url 'dashboard' %}" class="block px-4 py-2 text-sm text-grey-700 hover:bg-gray-100">Dashboard</a>
              <form method="post" action="{% url 'sign-out' %}">
               {% csrf_token %}
               <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</button>
@@ -57,8 +54,8 @@
       <a href="{% url 'home' %}" class="block text-gray-600 hover:text-orange-600 font-medium">HOME</a>
       <a href="{% url 'event_list' %}" class="block text-gray-600 hover:text-orange-600 font-medium">EVENTS</a>
       <a href="{% url 'dashboard' %}" class="block text-gray-600 hover:text-orange-600 font-medium">DASHBOARD</a>
-      <a href="#" class="block text-gray-600 hover:text-orange-600 font-medium">GROUPS</a>
-      <a href="#" class="block text-gray-600 hover:text-orange-600 font-medium">CREATE GROUP</a>
+      <a href="{% url "group-list" %}" class="block text-gray-600 hover:text-orange-600 font-medium">GROUPS</a>
+      <a href="{% url "create-group" %}" class="block text-gray-600 hover:text-orange-600 font-medium">CREATE GROUP</a>
     </div>
   </nav>
 

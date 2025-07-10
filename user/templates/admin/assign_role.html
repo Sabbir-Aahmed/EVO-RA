@@ -1,0 +1,26 @@
+{% include 'partials/nav.html' %}
+
+<div class="max-w-xl mx-auto my-10 p-6 bg-white shadow-md rounded-lg">
+    {% if messages %}
+        <ul class="mb-4">
+        {% for message in messages %}
+            <li class="bg-green-500 text-white px-4 py-2 rounded mb-2">
+            {{ message }}
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+
+    <h2 class="text-2xl font-bold mb-4 text-gray-800">Assign Role</h2>
+
+    <form method="POST" action="{% url 'assigned-role' user.id %}" class="space-y-4">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+            Assign Role
+        </button>
+    </form>
+</div>
+
+{% include 'partials/footer.html' %}
