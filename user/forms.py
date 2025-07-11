@@ -57,7 +57,8 @@ class LoginForm(StyledFormMixing, AuthenticationForm):
 class AssignedRoleForm(StyledFormMixing,forms.Form):
     role = forms.ModelChoiceField(
         queryset = Group.objects.all(),
-        empty_label= "Select a role"
+        empty_label= "Select a role",
+        label="Role"
     )
 
 class CreateGroupForm(StyledFormMixing, forms.ModelForm):

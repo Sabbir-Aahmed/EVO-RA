@@ -1,6 +1,7 @@
 from django import forms
-from events.models import Event, Participant, Catagory
+from events.models import Event, Catagory
 from django.forms.widgets import CheckboxSelectMultiple
+from django.contrib.auth.models import User
 
 class StyledFormMixing:
     
@@ -56,45 +57,26 @@ class StyledFormMixing:
 
 class EventForm(StyledFormMixing, forms.ModelForm):
     participants = forms.ModelMultipleChoiceField(
-        queryset=Participant.objects.all(),
+        queryset=User.objects.all(),
         widget=CheckboxSelectMultiple(),
         required=False,
     )
 
     class Meta:
         model = Event
-        fields = ['name', 'description', 'date', 'time', 'location', 'category', 'participants']
+        fields = ['name', 'description', 'date', 'location', 'category', 'participants']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.apply_styled_widgets()
-
         if self.instance.id:
             self.fields['participants'].initial = self.instance.participants.all()
 
     def save(self, commit=True):
-        event_instance = super().save(commit=commit)
+        event = super().save(commit=False)
         if commit:
-            selected_participants = self.cleaned_data.get('participants')
-            current_participants = Participant.objects.filter(events=event_instance)
-            to_remove = current_participants.difference(selected_participants)
-            to_add = selected_participants.difference(current_participants)
-
-            for participant in to_remove:
-                participant.events.remove(event_instance)
-
-            for participant in to_add:
-                participant.events.add(event_instance)
-
-        return event_instance
-    
-class ParticipantForm(StyledFormMixing, forms.ModelForm):
-    class Meta:
-        model = Participant
-        fields = ['name', 'email', 'events']
-        widgets = {
-            'events': forms.CheckboxSelectMultiple
-        }
+            event.save()
+            self.save_m2m()
+        return event
 
 class CatagoryForm(StyledFormMixing, forms.ModelForm):
     class Meta:

@@ -19,8 +19,12 @@
         <a href="{% url 'home' %}" class="text-gray-600 hover:text-orange-600 font-medium">HOME</a>
         <a href="{% url 'event_list' %}" class="text-gray-600 hover:text-orange-600 font-medium">EVENTS</a>
         <a href="{% url 'dashboard' %}" class="text-gray-600 hover:text-orange-600 font-medium">DASHBOARD</a>
-        <a href="{% url "group-list" %}" class="text-gray-600 hover:text-orange-600 font-medium">GROUPS</a>
-        <a href="{% url "create-group" %}" class="text-gray-600 hover:text-orange-600 font-medium">CREATE GROUP</a>
+
+        {% if request.user.is_superuser %}
+          <a href="{% url 'group-list' %}" class="text-gray-600 hover:text-orange-600 font-medium">GROUPS</a>
+          <a href="{% url 'create-group' %}" class="text-gray-600 hover:text-orange-600 font-medium">CREATE GROUP</a>
+          <a href="{% url 'participant_list' %}?filter=all" class="text-gray-600 hover:text-orange-600 font-medium">ASSIGN ROLE</a>
+        {% endif %}
       </div>
 
       
@@ -30,8 +34,12 @@
           <button id="user-menu-button" class="focus:outline-none">
             <i class="fa-solid fa-user text-orange-500"></i>
           </button>
+
+          {% if user.is_authenticated %}
+            <p class="text-sm text-gray-700 mt-1">{{ user.first_name }}</p>
+          {% endif %}
+
           <div id="user-menu" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden z-20">
-            <a href="{% url 'dashboard' %}" class="block px-4 py-2 text-sm text-grey-700 hover:bg-gray-100">Dashboard</a>
              <form method="post" action="{% url 'sign-out' %}">
               {% csrf_token %}
               <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</button>
@@ -56,6 +64,7 @@
       <a href="{% url 'dashboard' %}" class="block text-gray-600 hover:text-orange-600 font-medium">DASHBOARD</a>
       <a href="{% url "group-list" %}" class="block text-gray-600 hover:text-orange-600 font-medium">GROUPS</a>
       <a href="{% url "create-group" %}" class="block text-gray-600 hover:text-orange-600 font-medium">CREATE GROUP</a>
+      <a href="{% url 'participant_list' %}?filter=all" class="block text-gray-600 hover:text-orange-600 font-medium">ASSIGN ROLE</a>
     </div>
   </nav>
 

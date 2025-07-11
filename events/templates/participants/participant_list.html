@@ -4,11 +4,10 @@
 {% if messages %}
   {% for message in messages %}
     <div class='bg-green-100 text-green-800 px-4 py-3 rounded border border-green-200'>
-      {{message}}
+      {{ message }}
     </div>
   {% endfor %}
 {% endif %}
-
 
 <div class="px-4 sm:px-6 md:px-8 mx-auto max-w-4xl">
   <div class="max-w-4xl mx-auto p-6 mt-10 bg-white shadow rounded-lg my-8 px-4 sm:px-6 md:px-8">
@@ -16,25 +15,39 @@
 
     <ul class="space-y-4">
       {% for participant in participants %}
-        <li class="border p-4 rounded flex flex-col sm:flex-row sm:justify-between sm:items-center">
+        <li class="border p-4 rounded flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
           <div class="mb-3 sm:mb-0">
-            <strong class="block text-lg">{{ participant.name }}</strong>
+            <strong class="block text-lg">{{ participant.get_full_name }}</strong>
             <span class="text-gray-600 text-sm">{{ participant.email }}</span>
+
+            {% if participant.groups.all %}
+              <p class="text-sm mt-1">
+                Role:
+                <span class="font-medium text-orange-500">
+                  {{ participant.groups.first.name }}
+                </span>
+              </p>
+            {% else %}
+              <p class="text-sm mt-1 text-red-600">No role assigned</p>
+            {% endif %}
           </div>
-          <form
-            action="{% url 'participant_delete' participant.id %}"
-            method="POST"
-            onsubmit="return confirm('Are you sure you want to delete this participant?');"
-            class="w-full sm:w-auto"
-          >
-            {% csrf_token %}
-            <button
-              type="submit"
-              class="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-5 py-2 rounded w-full sm:w-auto transition duration-300"
-            >
-              Delete
-            </button>
-          </form>
+
+          <div class="flex flex-col sm:flex-row gap-2">
+            <a href="{% url 'assigned-role' participant.id %}"
+              class="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-5 py-2 rounded w-full sm:w-auto text-center transition duration-300">
+              Assign Role
+            </a>
+
+            <form action="{% url 'participant_delete' participant.id %}" method="POST"
+              onsubmit="return confirm('Are you sure you want to delete this participant?');"
+              class="w-full sm:w-auto">
+              {% csrf_token %}
+              <button type="submit"
+                class="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-5 py-2 rounded w-full sm:w-auto transition duration-300">
+                Delete
+              </button>
+            </form>
+          </div>
         </li>
       {% empty %}
         <li class="text-center text-gray-500">No participants found.</li>
@@ -42,4 +55,5 @@
     </ul>
   </div>
 </div>
+
 {% include 'partials/footer.html' %}
