@@ -1,0 +1,43 @@
+{% load static %}
+
+        <div class="bg-gray-100 rounded-xl shadow-md p-6 hover:shadow-xl transition">
+          <h3 class="text-xl font-semibold mb-2">{{ event.name }}</h3>
+          <img class="mb-2" src="{% static "image/img3.webp" %}" alt="">
+          <p class="text-gray-600 mb-3"> <i class="fa fa-calendar "></i> {{ event.date }}</p>
+          <p class="text-gray-600 mb-1"> <i class="fa fa-map-marker "></i> {{ event.location }}</p>
+          <p class="text-gray-600 mb-1"> <i class="fa fa-users "></i> {{ event.participant_count }} Participants</p>
+          <p class="text-sm text-gray-700 mb-4">
+            {{ event.description|truncatechars:120 }}
+          </p>
+
+          <div class="flex justify-between items-center">
+            <a
+              href="{% url 'event_detail' event.id %}"
+              class="inline-block bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition"
+            >
+              Details
+            </a>
+            {% if user.is_authenticated %}
+              {% if user in event.participants.all %}
+                <form action="{% url 'book_event' event.id %}" method="POST">
+                  {% csrf_token %}
+                  <button type="submit"
+                    class="inline-block bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition">
+                    RSVP'ed
+                  </button>
+                </form>
+                {% else %}
+
+                <form action="{% url 'book_event' event.id %}" method="POST">
+                  {% csrf_token %}
+                  <button type="submit"
+                    class="inline-block bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition">
+                    RSVP
+                  </button>
+                </form>
+              {% endif %}
+              {% else %}
+                <a href="{% url 'login' %}" class="text-sm text-blue-600 underline">Login to book</a>
+            {% endif %}
+          </div>
+        </div>

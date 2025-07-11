@@ -1,10 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models import Count, Q, Prefetch, Sum
-from django.utils import timezone
+from django.db.models import Count, Q
 from events.models import Event, Catagory 
 from events.forms import EventForm, CatagoryForm
 from django.contrib import messages
-from django.db import models
+from django.utils import timezone
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -39,7 +38,7 @@ def footer(request):
     return render(request, "footer.html")
 
 @user_passes_test(is_admin_or_organizer)
-def dashboard(request):
+def adminAndOrganizerDashboard(request):
     today = timezone.now().date()
     filter_option = request.GET.get('filter')
 
@@ -129,7 +128,6 @@ def event_create(request):
 
         return redirect('event_list')
     return render(request, 'events/event_form.html', {'form': form})
-
 
 
 @user_passes_test(is_admin_or_organizer)

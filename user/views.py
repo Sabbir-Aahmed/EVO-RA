@@ -4,7 +4,6 @@ from django.contrib import messages
 from django.contrib.auth import login,logout
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.models import User, Group
-from django.db.models import Prefetch
 from events.models import Event
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -56,7 +55,7 @@ def activate_user(request, user_id, token):
 
             participant_group, created = Group.objects.get_or_create(name='Participant')
             user.groups.add(participant_group)
-            
+
             return redirect('sign-in')
         else:
             return HttpResponse('Invalid Id or token')
@@ -112,11 +111,15 @@ def delete_group(request, id):
 def user_dashboard(request):
     today = timezone.now().date()
     booked_events = Event.objects.filter(participants=request.user).order_by('date')
-    return render(request, 'users/user_dashboard.html', {'booked_events': booked_events})
+    return render(request, 'user_dashboard.html', {'booked_events': booked_events})
 
 @login_required
 def book_event(request, id):
     event = get_object_or_404(Event, id=id)
+
+    if not request.user.groups.filter(name='Participant').exists():
+        messages.error(request, "Only participants are allowed to book events.")
+        return redirect('home')
 
     if request.user in event.participants.all():
         event.participants.remove(request.user)

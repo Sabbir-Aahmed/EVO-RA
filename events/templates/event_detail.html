@@ -58,7 +58,7 @@
         <h3 class="text-lg font-semibold text-gray-800 mb-2">👥 Participants ({{ event.participant_count }})</h3>
         <ul class="list-disc list-inside text-gray-700 space-y-1">
           {% for participant in event.participants.all %}
-            <li>{{ participant.name }} ({{ participant.email }})</li>
+            <li>{{ participant.username }}</li>
           {% empty %}
             <li class="italic text-gray-500">No participants yet.</li>
           {% endfor %}

@@ -1,12 +1,12 @@
 from django.contrib import admin
 from django.urls import path
 from django.views.generic import RedirectView
-from events.views import home,footer,base,dashboard,event_detail,event_list,event_create,event_update,event_delete,category_create,category_list,participant_list,participant_delete,delete_catagory
+from events.views import home,footer,base,adminAndOrganizerDashboard,event_detail,event_list,event_create,event_update,event_delete,category_create,category_list,participant_list,participant_delete,delete_catagory
 urlpatterns = [
     path('home/',home, name="home"),
     path('base/',base),
     path('footer/',footer),
-    path('dashboard/',dashboard, name="dashboard"),
+    path('dashboard/',adminAndOrganizerDashboard, name="dashboard"),
     path('events/<int:id>/', event_detail, name='event_detail'),
     path('events/',event_list, name='event_list'),
     path('events/create/', event_create, name='event_create'),

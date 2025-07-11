@@ -18,13 +18,13 @@
       <div class="hidden md:flex items-center gap-x-6 text-sm md:text-base">
         <a href="{% url 'home' %}" class="text-gray-600 hover:text-orange-600 font-medium">HOME</a>
         <a href="{% url 'event_list' %}" class="text-gray-600 hover:text-orange-600 font-medium">EVENTS</a>
-        <a href="{% url 'dashboard' %}" class="text-gray-600 hover:text-orange-600 font-medium">DASHBOARD</a>
+        <a href="{% url 'dashboard-redirect' %}" class="text-gray-600 hover:text-orange-600 font-medium">DASHBOARD</a>
 
-        {% if request.user.is_superuser %}
-          <a href="{% url 'group-list' %}" class="text-gray-600 hover:text-orange-600 font-medium">GROUPS</a>
-          <a href="{% url 'create-group' %}" class="text-gray-600 hover:text-orange-600 font-medium">CREATE GROUP</a>
-          <a href="{% url 'participant_list' %}?filter=all" class="text-gray-600 hover:text-orange-600 font-medium">ASSIGN ROLE</a>
-        {% endif %}
+          {% if request.user.is_superuser %}
+            <a href="{% url 'group-list' %}" class="text-gray-600 hover:text-orange-600 font-medium">GROUPS</a>
+            <a href="{% url 'create-group' %}" class="text-gray-600 hover:text-orange-600 font-medium">CREATE GROUP</a>
+            <a href="{% url 'participant_list' %}?filter=all" class="text-gray-600 hover:text-orange-600 font-medium">ASSIGN ROLE</a>
+          {% endif %}
       </div>
 
       
