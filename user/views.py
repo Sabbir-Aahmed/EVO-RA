@@ -53,6 +53,10 @@ def activate_user(request, user_id, token):
         if default_token_generator.check_token(user,token):
             user.is_active = True
             user.save()
+
+            participant_group, created = Group.objects.get_or_create(name='Participant')
+            user.groups.add(participant_group)
+            
             return redirect('sign-in')
         else:
             return HttpResponse('Invalid Id or token')
