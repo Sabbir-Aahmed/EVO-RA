@@ -15,7 +15,7 @@ def is_organizer(user):
 def is_admin_or_organizer(user):
     return is_admin(user) or is_organizer(user)
 
-
+@login_required
 def home(request):
     upcoming_events = (
         Event.objects
