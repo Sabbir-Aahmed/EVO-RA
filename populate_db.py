@@ -2,15 +2,14 @@ import os
 import django
 import random
 from faker import Faker
-from datetime import timedelta
 from django.utils import timezone
-from events.models import Catagory, Event, Participant  
 
 # Set up Django environment
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'events_management.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'event_management.settings')  # ✅ Update if needed
 django.setup()
 
-
+from django.contrib.auth.models import User, Group
+from events.models import Catagory, Event
 
 fake = Faker()
 
@@ -23,7 +22,7 @@ def populate_db():
             description=fake.sentence()
         )
         categories.append(category)
-    print(f"Created {len(categories)} categories.")
+    print(f"✅ Created {len(categories)} categories.")
 
     # 2. Create Events
     events = []
@@ -37,25 +36,30 @@ def populate_db():
             category=random.choice(categories)
         )
         events.append(event)
-    print(f"Created {len(events)} events.")
+    print(f"✅ Created {len(events)} events.")
 
-    # 3. Create Participants
-    participants = []
+    # 3. Create Users and assign to 'Participant' group
+    participant_group, _ = Group.objects.get_or_create(name='Participant')
+    users = []
+
     for _ in range(30):
-        participant = Participant.objects.create(
-            name=fake.name(),
-            email=fake.unique.email()
+        username = fake.unique.user_name()
+        user = User.objects.create_user(
+            username=username,
+            email=fake.unique.email(),
+            password='testpass123'  # set a simple password
         )
-        participants.append(participant)
-    print(f"Created {len(participants)} participants.")
+        user.groups.add(participant_group)
+        users.append(user)
+    print(f"✅ Created {len(users)} participant users.")
 
-    # 4. Assign Participants to Events
+    # 4. Assign users to events
     for event in events:
-        assigned_participants = random.sample(participants, random.randint(2, 8))
-        event.participants.set(assigned_participants)
-    print("Assigned participants to all events.")
+        assigned_users = random.sample(users, random.randint(2, 8))
+        event.participants.set(assigned_users)
+    print("✅ Assigned users to events.")
 
-    print("Database population completed successfully.")
+    print("🎉 Database population completed successfully!")
 
 if __name__ == "__main__":
     populate_db()
