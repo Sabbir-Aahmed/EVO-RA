@@ -11,6 +11,7 @@ class Catagory(models.Model):
 
 class Event(models.Model):
     name = models.CharField(max_length=250) 
+    image = models.ImageField(upload_to='events_image', blank=True, null= True, default= "events_image/default.jpg")
     description = models.TextField()
     date = models.DateField(default=timezone.now)
     time = models.TimeField(default=timezone.now)

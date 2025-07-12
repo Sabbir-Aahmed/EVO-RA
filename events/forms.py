@@ -64,7 +64,7 @@ class EventForm(StyledFormMixing, forms.ModelForm):
 
     class Meta:
         model = Event
-        fields = ['name', 'description', 'date', 'location', 'category', 'participants']
+        fields = ['name', 'description', 'date', 'location', 'category', 'participants', 'image']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

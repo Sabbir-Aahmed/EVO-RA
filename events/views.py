@@ -16,19 +16,22 @@ def is_admin_or_organizer(user):
     return is_admin(user) or is_organizer(user)
 
 
-@login_required
 def home(request):
     upcoming_events = (
-        Event.objects.filter(date__gte=timezone.now().date())
-        .select_related('category')
+        Event.objects
+        .filter(date__gte=timezone.now().date())
+        .select_related('category') 
         .prefetch_related('participants')
         .annotate(participant_count=Count('participants'))
-        .order_by('date')
+        .order_by('date') 
     )
+
+    is_participant = request.user.groups.filter(name='Participant').exists()
+
     return render(request, 'home.html', {
         'upcoming_events': upcoming_events,
+        'is_participant': is_participant,
     })
-
 
 def base(request):
     return render(request, "base.html")
@@ -118,7 +121,7 @@ def event_detail(request, id):
 
 @user_passes_test(is_admin_or_organizer)
 def event_create(request):
-    form = EventForm(request.POST or None, request.FILES or None)
+    form = EventForm(request.POST, request.FILES)
     if form.is_valid():
         event = form.save(commit=False)
         event.save()

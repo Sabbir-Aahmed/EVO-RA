@@ -5,7 +5,6 @@ from django.contrib.auth import login,logout
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.models import User, Group
 from events.models import Event
-from django.utils import timezone
 from django.contrib.auth.decorators import login_required, user_passes_test
 
 def sign_up(request):
@@ -109,8 +108,12 @@ def delete_group(request, id):
 
 @login_required
 def user_dashboard(request):
-    today = timezone.now().date()
-    booked_events = Event.objects.filter(participants=request.user).order_by('date')
+    booked_events = (
+        Event.objects
+        .filter(participants=request.user)
+        .prefetch_related('participants')
+        .order_by('date')
+    )
     return render(request, 'user_dashboard.html', {'booked_events': booked_events})
 
 @login_required

@@ -7,8 +7,11 @@
       </h2>
 
       <div class="relative mb-5">
-        <img src="{% static 'image/img1.avif' %}" alt="" class="w-full rounded-md shadow-md"
-        />
+          {% if event.image %}
+            <img class="mb-2 w-full h-48 object-cover rounded" src="{{ event.image.url }}" alt="{{ event.name }}">
+          {% else %}
+            <img class="mb-2 w-full h-48 object-cover rounded" src="{% static 'image/default.jpg' %}" alt="No image available">
+          {% endif %}
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 text-sm text-gray-700 mb-5">

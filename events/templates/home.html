@@ -32,6 +32,8 @@
     </div>
   </section>
 
+      
+      
   <section class="py-16 bg-white">
     <div class="container mx-auto px-4">
       <h2
@@ -39,8 +41,21 @@
       >
         Upcoming Events
       </h2>
+      
+      {% if messages %}
+        <div class="mb-4">
+          {% for message in messages %}
+            <div class="p-3 mb-2 rounded text-white text-center
+              {% if message.tags == 'success' %}bg-green-500
+              {% elif message.tags == 'error' %}bg-red-500
+              {% elif message.tags == 'info' %}bg-green-500
+              {% else %}bg-gray-500{% endif %}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}      
 
-      {% comment %} want to inherit this div part  {% endcomment %}
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {% for event in upcoming_events %}
 

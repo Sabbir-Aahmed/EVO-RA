@@ -78,19 +78,30 @@
                     {% for event in filtered_events %}
                         <div class="bg-gray-100 p-6 rounded-xl shadow hover:shadow-lg transition">
                             <h4 class="text-lg font-bold text-gray-800 mb-2">{{ event.name }}</h4>
-                            <img class="mb-2 w-full h-40 object-cover rounded" src="{% static 'image/img3.webp' %}" alt="">
+
+                            {% if event.image %}
+                                <img class="mb-2 w-full h-48 object-cover rounded" src="{{ event.image.url }}" alt="{{ event.name }}">
+                            {% else %}
+                                <img class="mb-2 w-full h-48 object-cover rounded" src="{% static 'image/default.jpg' %}" alt="No image available">
+                            {% endif %}
+
                             <p class="text-gray-600 mb-1"><i class="fa fa-calendar "></i> {{ event.date }}</p>
                             <p class="text-gray-600 mb-1"><i class="fa fa-map-marker "></i> {{ event.location }}</p>
                             <p class="text-gray-600 mb-1"><i class="fa fa-users "></i> {{ event.participant_count }} Participants</p>
                             <p class="text-sm text-gray-700 mb-4">{{ event.description|truncatechars:120 }}</p>
-                            <div class="flex justify-between gap-2">
+
+                            <div class="flex flex-wrap gap-2 mt-auto justify-between">
+
                                 <a href="{% url 'event_detail' event.id %}" class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition">Details</a>
                                 <a href="{% url 'event_update' event.id %}" class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition">Update</a>
+
                                 <form method="POST" action="{% url 'event_delete' event.id %}">
                                     {% csrf_token %}
+
                                     <button type="submit" class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition">
                                         Delete
                                     </button>
+
                                 </form>                  
                             </div>
                         </div>
