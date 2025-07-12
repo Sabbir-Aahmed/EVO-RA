@@ -94,19 +94,18 @@
                             <p class="text-gray-600 mb-1"><i class="fa fa-users "></i> {{ event.participant_count }} Participants</p>
                             <p class="text-sm text-gray-700 mb-4">{{ event.description|truncatechars:120 }}</p>
 
-                            <div class="flex flex-wrap gap-2 mt-auto justify-between">
-
-                                <a href="{% url 'event_detail' event.id %}" class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition">Details</a>
-                                <a href="{% url 'event_update' event.id %}" class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition">Update</a>
-
-                                <form method="POST" action="{% url 'event_delete' event.id %}">
+                            <div class="flex flex-wrap sm:flex-nowrap gap-2 justify-between">
+                                <a href="{% url 'event_detail' event.id %}" class="flex-1 sm:flex-none bg-orange-500 text-white px-4 py-2 rounded text-center hover:bg-orange-600 transition">
+                                    Details </a>
+                                
+                                <form method="POST" action="{% url 'event_delete' event.id %}" class="flex-1 sm:flex-none">
                                     {% csrf_token %}
+                                    <button type="submit" class="w-full bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition">
+                                    Delete</button>
+                                </form>
 
-                                    <button type="submit" class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition">
-                                        Delete
-                                    </button>
-
-                                </form>                  
+                                <a href="{% url 'event_update' event.id %}" class="flex-1 sm:flex-none bg-orange-500 text-white px-4 py-2 rounded text-center hover:bg-orange-600 transition">
+                                Update</a>
                             </div>
                         </div>
                     {% endfor %}
