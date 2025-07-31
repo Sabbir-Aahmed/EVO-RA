@@ -27,7 +27,7 @@ def sign_up(request):
             user.save()
 
             messages.success(request, 'A confirmation email was sent. Please check your email.')
-            return redirect('sign-in')
+            return redirect('login')
     return render(request, 'registration/sign-up.html', {'form': form})
             
 '''
@@ -64,7 +64,7 @@ def activate_user(request, user_id, token):
             participant_group, created = Group.objects.get_or_create(name='Participant')
             user.groups.add(participant_group)
 
-            return redirect('sign-in')
+            return redirect('login')
         else:
             return HttpResponse('Invalid Id or token')
     except User.DoesNotExist:
@@ -156,6 +156,7 @@ def group_list(request):
 class GroupListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = Group
     template_name ='admin/group_list.html'
+    context_object_name = 'groups'
 
     def test_func(self):
         return is_admin(self.request.user)
@@ -177,17 +178,19 @@ def delete_group(request, id):
 class DeleteGroupView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Group
     context_object_name = 'group'
+    pk_url_kwarg = 'id'
     success_url = reverse_lazy('group-list')
 
     def test_func(self):
         return is_admin(self.request.user)
-    
-    def delete( self, request, *args, **kwargs):
+
+    def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         group_name = self.object.name
-        response = super().delete(request,*args,**kwargs)
+        self.object.delete()
         messages.success(request, f'Group "{group_name}" has been deleted successfully.')
-        return response
+        return redirect(self.success_url)
+
     
 '''
 @login_required
