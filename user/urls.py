@@ -1,17 +1,18 @@
 from django.urls import path
-from user.views import sign_up, sign_in, sign_out , activate_user,create_group,group_list,delete_group, assign_role ,book_event, user_dashboard,dashboard_redirect
+from user.views import sign_up , activate_user,dashboard_redirect, CustomLoginView, AssignRoleView, CreateGroupView, GroupListView, DeleteGroupView, BookEvent, UserDashboardView
+from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
     path('sign-up/',sign_up, name="sign-up"),
-    path('sign-in/',sign_in, name="sign-in"),
-    path('sign-out/',sign_out, name="sign-out"),
+    path('sign-in/', CustomLoginView.as_view() , name='sign-in'),
+    path('sign-out/',LogoutView.as_view(), name="sign-out"),
     path('activate/<int:user_id>/<str:token>/', activate_user, name='activate-user'),
-    path('create-group/', create_group, name='create-group'),
-    path('groups/', group_list, name='group-list'),
-    path('groups/delete/<int:id>/', delete_group, name='delete-group'),
-    path('participants/<int:id>/assign-role/', assign_role, name='assigned-role'),
-    path('book/<int:id>/', book_event, name='book_event'),
+    path('admin/create-group/', CreateGroupView.as_view(), name='create-group'),
+    path('admin/groups/', GroupListView.as_view(), name='group-list'),
+    path('groups/delete/<int:id>/', DeleteGroupView.as_view(), name='delete-group'),
+    path('participants/<int:id>/assign-role/', AssignRoleView.as_view(), name='assigned-role'),
+    path('book/<int:id>/', BookEvent.as_view(), name='book_event'),
     path('dashboard-redirect/', dashboard_redirect, name='dashboard-redirect'),
-    path('user-dashboard/', user_dashboard, name='user_dashboard'),
+    path('user-dashboard/', UserDashboardView.as_view(), name='user_dashboard'),
     
 ]
