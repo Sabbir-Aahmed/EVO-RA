@@ -4,10 +4,15 @@ from events.models import Event, Catagory
 from events.forms import EventForm, CatagoryForm
 from django.contrib import messages
 from django.utils import timezone
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import login_required, user_passes_test
 from user.views import is_admin
+from django.views.generic import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
 
 def is_organizer(user):
     return user.groups.filter(name='Organizer').exists()
@@ -15,6 +20,7 @@ def is_organizer(user):
 def is_admin_or_organizer(user):
     return is_admin(user) or is_organizer(user)
 
+'''
 @login_required
 def home(request):
     upcoming_events = (
@@ -32,6 +38,27 @@ def home(request):
         'upcoming_events': upcoming_events,
         'is_participant': is_participant,
     })
+'''
+
+class HomeView(LoginRequiredMixin, TemplateView):
+    template_name = 'home.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['upcoming_events'] = (
+            Event.objects
+            .filter(date__gte=timezone.now().date())
+            .select_related('category')
+            .prefetch_related('participants')
+            .annotate(participant_count=Count('participants'))
+            .order_by('date')
+        )
+
+        context['is_participant'] = self.request.user.groups.filter(name='Participant').exists()
+        
+        return context
+    
 
 def base(request):
     return render(request, "base.html")
@@ -40,6 +67,7 @@ def base(request):
 def footer(request):
     return render(request, "footer.html")
 
+'''
 @user_passes_test(is_admin_or_organizer)
 def adminAndOrganizerDashboard(request):
     today = timezone.now().date()
@@ -75,6 +103,54 @@ def adminAndOrganizerDashboard(request):
         'header': header,
     }
     return render(request, 'dashboard.html', context)
+
+'''
+
+
+class AdminAndOrganizerDashboardView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+    template_name = 'dashboard.html'
+
+    def test_func(self):
+        return is_admin_or_organizer(self.request.user)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        today = timezone.now().date()
+        filter_option = self.request.GET.get('filter')
+
+        events_data = Event.objects.aggregate(
+            total_events=Count('id'),
+            upcoming_events=Count('id', filter=Q(date__gt=today)),
+            past_events=Count('id', filter=Q(date__lt=today))
+        )
+
+        total_participants = User.objects.filter(events__isnull=False).distinct().count()
+
+        filtered_events = (
+            Event.objects.select_related('category')
+            .prefetch_related('participants')
+            .annotate(participant_count=Count('participants'))
+        )
+
+        filter_map = {
+            'all': (filtered_events, 'All Events'),
+            'upcoming': (filtered_events.filter(date__gt=today), 'Upcoming Events'),
+            'past': (filtered_events.filter(date__lt=today), 'Past Events'),
+        }
+
+        filtered_events, header = filter_map.get(filter_option, (filtered_events.filter(date=today), "Today’s Events"))
+
+        context.update({
+            'total_events': events_data['total_events'],
+            'upcoming_events': events_data['upcoming_events'],
+            'past_events': events_data['past_events'],
+            'total_participants': total_participants,
+            'filtered_events': filtered_events,
+            'header': header,
+        })
+
+        return context
+
 
 @login_required
 def event_list(request):

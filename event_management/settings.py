@@ -14,7 +14,7 @@ SECRET_KEY = 'django-insecure-q#yd9(79e=bd&d2e5v!i+w!g6ilil49a$63a#u8=nhb9aew_z7
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
+AUTH_USER_MODEL = 'user.CustomUser'
 ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = ['https://*.onrender.com' , 'http://127.0.0.1:8000/']
 
@@ -150,8 +150,8 @@ EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
-# FRONTEND_URL = 'http://127.0.0.1:8000'
-FRONTEND_URL = 'https://evo-ra.onrender.com'
+FRONTEND_URL = 'http://127.0.0.1:8000'
+# FRONTEND_URL = 'https://evo-ra.onrender.com'
 LOGIN_URL = 'sign-in'
 
 LOGIN_REDIRECT_URL = '/events/home/'

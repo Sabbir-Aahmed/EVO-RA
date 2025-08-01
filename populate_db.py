@@ -8,9 +8,11 @@ from django.utils import timezone
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'event_management.settings')  # ✅ Update if needed
 django.setup()
 
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group
 from events.models import Catagory, Event
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 fake = Faker()
 
 def populate_db():

@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
-from django.contrib.auth.models import User
+from django.conf import settings
+
 
 class Catagory(models.Model):
     name = models.CharField(max_length=250)
@@ -17,8 +18,9 @@ class Event(models.Model):
     time = models.TimeField(default=timezone.now)
     location = models.CharField(max_length=200)
     category = models.ForeignKey(Catagory, on_delete=models.CASCADE)
-    participants = models.ManyToManyField(User, related_name='events')
-    def __str__(self):
+    participants = models.ManyToManyField(settings.AUTH_USER_MODEL , related_name='events')
+
+    def __str__(self): 
         return self.name
     
     def is_upcoming(self):

@@ -1,16 +1,19 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
-from user.forms import CustomRegisterForm, LoginForm, AssignedRoleForm, CreateGroupForm
+from user.forms import CustomRegisterForm, LoginForm, AssignedRoleForm, CreateGroupForm, EditProfileForm
 from django.contrib import messages
 from django.contrib.auth import login,logout
 from django.contrib.auth.tokens import default_token_generator
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group
 from events.models import Event
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.views import PasswordChangeView, LoginView ,PasswordResetView, PasswordResetConfirmView
-from django.views.generic import FormView, CreateView, ListView, DeleteView
+from django.views.generic import FormView, CreateView, ListView, DeleteView, TemplateView, UpdateView
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views import View
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 def sign_up(request):
@@ -87,7 +90,7 @@ def assign_role(request, id):
     return render(request, 'admin/assign_role.html', {'form': form, 'user': user})
 '''
 
-class AssignRoleView(LoginRequiredMixin, User, FormView):
+class AssignRoleView(LoginRequiredMixin, UserPassesTestMixin, FormView):
     template_name = 'admin/assign_role.html'
     form_class = AssignedRoleForm
 
@@ -264,3 +267,23 @@ def dashboard_redirect(request):
         return redirect('dashboard')
     else:
         return redirect('user_dashboard')
+
+class ProfileView(TemplateView):
+    template_name ='accounts/profile.html'
+
+    def get_context_data(self, **kwargs):
+        context =  super().get_context_data(**kwargs)
+        user = self.request.user
+
+        context['username'] = user.username
+        context['email'] = user.email
+        context['name'] = user.get_full_name()
+        context['profile_image'] = user.profile_image
+        context['phone_number'] = user.phone_number
+        context['bio'] = user.bio
+        context['location'] = user.location
+        context['member_since'] = user.date_joined
+        context['last_login'] = user.last_login
+
+        return context
+    

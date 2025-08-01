@@ -1,5 +1,5 @@
 from django.urls import path
-from user.views import sign_up , activate_user,dashboard_redirect, CustomLoginView, AssignRoleView, CreateGroupView, GroupListView, DeleteGroupView, BookEvent, UserDashboardView
+from user.views import sign_up , activate_user,dashboard_redirect, CustomLoginView, AssignRoleView, CreateGroupView, GroupListView, DeleteGroupView, BookEvent, UserDashboardView, ProfileView
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
@@ -14,5 +14,6 @@ urlpatterns = [
     path('book/<int:id>/', BookEvent.as_view(), name='book_event'),
     path('dashboard-redirect/', dashboard_redirect, name='dashboard-redirect'),
     path('user-dashboard/', UserDashboardView.as_view(), name='user_dashboard'),
+    path('profile/',ProfileView.as_view(), name='profile')
     
 ]
