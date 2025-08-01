@@ -10,13 +10,12 @@ class CustomUser(AbstractUser):
     location = models.CharField(max_length=100, blank=True)
 
     phone_number = models.CharField(
-        max_length=15, blank=True,validators=[
-                                        RegexValidator(
-                                            regex=r'^\+8801\d{9}$',
-                                            message="Phone number must be in the format: '+8801XXXXXXXXX'."
+        max_length=15, blank=True,validators=[ RegexValidator(
+                                            regex=r'^(\+8801|01)\d{9}$',
+                                            message="Phone number must be in the format: '01XXXXXXXXX' or '+8801XXXXXXXXX'."
                                         ),
                                     ],
-                                    help_text="Enter your phone number like 01XXXXXXXXX. '+880' will be added automatically."
+                                   help_text="Enter your phone number like 01XXXXXXXXX. '+880' will be added automatically if not included."
     )
 
     def save(self, *args, **kwargs):

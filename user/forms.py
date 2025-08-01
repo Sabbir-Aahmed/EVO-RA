@@ -78,8 +78,33 @@ class CreateGroupForm(StyledFormMixing, forms.ModelForm):
         model = Group
         fields = ['name','permissions']
 
+from django import forms
+
 class EditProfileForm(StyledFormMixing, forms.ModelForm):
 
     class Meta:
         model = CustomUser
-        fields = ['email','phone_number','phone_number', 'last_name', 'bio', 'location', 'profile_image']
+        fields = ['email', 'phone_number', 'first_name', 'last_name', 'bio', 'location', 'profile_image']
+        widgets = {
+            'email': forms.EmailInput(attrs={
+                'class': 'w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400'
+            }),
+            'phone_number': forms.TextInput(attrs={
+                'class': 'w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400'
+            }),
+            'first_name': forms.TextInput(attrs={
+                'class': 'w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400'
+            }),
+            'last_name': forms.TextInput(attrs={
+                'class': 'w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400'
+            }),
+            'bio': forms.Textarea(attrs={
+                'class': 'w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400'
+            }),
+            'location': forms.TextInput(attrs={
+                'class': 'w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400'
+            }),
+            'profile_image': forms.ClearableFileInput(attrs={
+                'class': 'w-full'
+            }),
+        }

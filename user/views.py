@@ -30,7 +30,7 @@ def sign_up(request):
             user.save()
 
             messages.success(request, 'A confirmation email was sent. Please check your email.')
-            return redirect('login')
+            return redirect('sign-in')
     return render(request, 'registration/sign-up.html', {'form': form})
             
 '''
@@ -67,7 +67,7 @@ def activate_user(request, user_id, token):
             participant_group, created = Group.objects.get_or_create(name='Participant')
             user.groups.add(participant_group)
 
-            return redirect('login')
+            return redirect('sign-in')
         else:
             return HttpResponse('Invalid Id or token')
     except User.DoesNotExist:
@@ -268,7 +268,7 @@ def dashboard_redirect(request):
     else:
         return redirect('user_dashboard')
 
-class ProfileView(TemplateView):
+class ProfileView(LoginRequiredMixin, TemplateView):
     template_name ='accounts/profile.html'
 
     def get_context_data(self, **kwargs):
@@ -287,3 +287,16 @@ class ProfileView(TemplateView):
 
         return context
     
+class EditProfileView(LoginRequiredMixin, UpdateView):
+    model = User
+    form_class = EditProfileForm
+    template_name = 'accounts/update_profile.html'
+
+    def get_object(self):
+        return self.request.user
+
+    def get_success_url(self):
+        return reverse_lazy('profile')
+
+    def form_valid(self, form):
+        return super().form_valid(form)
