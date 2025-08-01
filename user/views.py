@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
-from user.forms import CustomRegisterForm, LoginForm, AssignedRoleForm, CreateGroupForm, EditProfileForm, CustomPasswordChangeForm
+from user.forms import CustomRegisterForm, LoginForm, AssignedRoleForm, CreateGroupForm, EditProfileForm, CustomPasswordChangeForm, CustomPasswordResetForm, CustomPasswordResetConfirmForm
 from django.contrib import messages
 from django.contrib.auth import login,logout
 from django.contrib.auth.tokens import default_token_generator
@@ -306,3 +306,29 @@ class EditProfileView(LoginRequiredMixin, UpdateView):
 class ChangePassword(PasswordChangeView):
     template_name = 'accounts/password_change.html'
     form_class = CustomPasswordChangeForm
+
+class CustomPasswordResetView(PasswordResetView):
+    form_class = CustomPasswordResetForm
+    template_name = 'registration/reset_password.html'
+    success_url = reverse_lazy('sign-in')
+    html_email_template_name = 'registration/reset_email.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['protocol'] = 'https' if self.request.is_secure() else 'http'
+        context['domain'] = self.request.get_host()
+
+        return context
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'A reset email has sent plese check your email!')
+        return super().form_valid(form)
+
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    form_class = CustomPasswordResetConfirmForm
+    template_name = 'registration/reset_password.html'
+    success_url = reverse_lazy('sign-in')
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Password reset successfully')
+        return super().form_valid(form)

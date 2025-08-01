@@ -112,3 +112,7 @@ class EditProfileForm(StyledFormMixing, forms.ModelForm):
 
 class CustomPasswordChangeForm(StyledFormMixing, PasswordChangeForm):
     pass
+class CustomPasswordResetForm(StyledFormMixing, PasswordResetForm):
+    pass
+class CustomPasswordResetConfirmForm(StyledFormMixing, SetPasswordForm):
+    pass
