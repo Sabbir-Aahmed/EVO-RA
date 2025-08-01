@@ -1,6 +1,6 @@
 from django.urls import path
-from user.views import sign_up , activate_user,dashboard_redirect, CustomLoginView, AssignRoleView, CreateGroupView, GroupListView, DeleteGroupView, BookEvent, UserDashboardView, ProfileView, EditProfileView
-from django.contrib.auth.views import LogoutView
+from user.views import sign_up , activate_user,dashboard_redirect, CustomLoginView, AssignRoleView, CreateGroupView, GroupListView, DeleteGroupView, BookEvent, UserDashboardView, ProfileView, EditProfileView, ChangePassword
+from django.contrib.auth.views import LogoutView, PasswordChangeDoneView
 
 urlpatterns = [
     path('sign-up/',sign_up, name="sign-up"),
@@ -15,5 +15,9 @@ urlpatterns = [
     path('dashboard-redirect/', dashboard_redirect, name='dashboard-redirect'),
     path('user-dashboard/', UserDashboardView.as_view(), name='user_dashboard'),
     path('profile/',ProfileView.as_view(), name='profile'),
-    path('edit_profile/', EditProfileView.as_view(), name='edit-profile')
+    path('edit_profile/', EditProfileView.as_view(), name='edit-profile'),
+    path('password-change/', ChangePassword.as_view(
+        template_name = 'accounts/password_change.html'), name = 'password-change'),
+    path('password-change/done/', PasswordChangeDoneView.as_view(
+        template_name = 'accounts/password_change_done.html'), name = 'password_change_done'),
 ]

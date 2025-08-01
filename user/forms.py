@@ -5,6 +5,7 @@ from django import forms
 import re
 from user.models import CustomUser
 from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import PasswordChangeForm ,PasswordResetForm, SetPasswordForm
 
 User = get_user_model()
 
@@ -108,3 +109,6 @@ class EditProfileForm(StyledFormMixing, forms.ModelForm):
                 'class': 'w-full'
             }),
         }
+
+class CustomPasswordChangeForm(StyledFormMixing, PasswordChangeForm):
+    pass

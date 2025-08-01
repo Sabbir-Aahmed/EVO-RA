@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
-from user.forms import CustomRegisterForm, LoginForm, AssignedRoleForm, CreateGroupForm, EditProfileForm
+from user.forms import CustomRegisterForm, LoginForm, AssignedRoleForm, CreateGroupForm, EditProfileForm, CustomPasswordChangeForm
 from django.contrib import messages
 from django.contrib.auth import login,logout
 from django.contrib.auth.tokens import default_token_generator
@@ -11,6 +11,7 @@ from django.views.generic import FormView, CreateView, ListView, DeleteView, Tem
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views import View
+from django.contrib.auth.views import PasswordChangeView
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -300,3 +301,8 @@ class EditProfileView(LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         return super().form_valid(form)
+
+
+class ChangePassword(PasswordChangeView):
+    template_name = 'accounts/password_change.html'
+    form_class = CustomPasswordChangeForm
