@@ -75,22 +75,6 @@ def activate_user(request, user_id, token):
         return HttpResponse('User not found')
     
 
-'''
-@user_passes_test(is_admin)
-def assign_role(request, id):
-    form = AssignedRoleForm()
-    user = get_object_or_404(User, id=id)
-    if request.method == 'POST':
-        form = AssignedRoleForm(request.POST)
-        if form.is_valid():
-            group = form.cleaned_data['role']
-            user.groups.clear()
-            user.groups.add(group)
-            messages.success(request, f'User {user.username} has been assigned to the {group.name} role.')
-            return redirect('participant_list')
-    return render(request, 'admin/assign_role.html', {'form': form, 'user': user})
-'''
-
 class AssignRoleView(LoginRequiredMixin, UserPassesTestMixin, FormView):
     template_name = 'admin/assign_role.html'
     form_class = AssignedRoleForm
@@ -117,21 +101,7 @@ class AssignRoleView(LoginRequiredMixin, UserPassesTestMixin, FormView):
         self.user_obj.groups.add(group)
         messages.success(self.request, f'User {self.user_obj.username} has been assigned to the {group.name} role.')
         return super().form_valid(form)
-'''
-@user_passes_test(is_admin)
-def create_group(request):
-    form = CreateGroupForm()
-    if request.method == 'POST':
-        form = CreateGroupForm(request.POST)
 
-        if form.is_valid():
-            group = form.save(commit = False)
-            group.save()
-            form.save_m2m()
-            messages.success(request, f'Group {group.name} has been created successfully')
-            return redirect('create-group')
-    return render(request, 'admin/create_group.html', {'form':form})
-'''
 
 class CreateGroupView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model =Group
@@ -148,14 +118,6 @@ class CreateGroupView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         return response
     
 
-'''
-@user_passes_test(is_admin)
-def group_list(request):
-    groups = Group.objects.prefetch_related('permissions').all()
-
-    return render(request,'admin/group_list.html',{'groups':groups})
-'''
-
 
 class GroupListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = Group
@@ -169,15 +131,6 @@ class GroupListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         queryset = Group.objects.prefetch_related('permissions').all()
         return queryset
 
-'''
-@user_passes_test(is_admin)
-def delete_group(request, id):
-    group = get_object_or_404(Group, id=id)
-    group_name = group.name
-    group.delete()
-    messages.success(request, f'Group "{group_name}" has been deleted successfully.')
-    return redirect('group-list')
-'''
 
 class DeleteGroupView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Group
@@ -195,18 +148,6 @@ class DeleteGroupView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         messages.success(request, f'Group "{group_name}" has been deleted successfully.')
         return redirect(self.success_url)
 
-    
-'''
-@login_required
-def user_dashboard(request):
-    booked_events = (
-        Event.objects
-        .filter(participants=request.user)
-        .prefetch_related('participants')
-        .order_by('date')
-    )
-    return render(request, 'user_dashboard.html', {'booked_events': booked_events})
-'''
 
 class UserDashboardView(LoginRequiredMixin, ListView):
     model = Event
@@ -220,27 +161,7 @@ class UserDashboardView(LoginRequiredMixin, ListView):
             .prefetch_related('participants')
             .order_by('date')
         )
-    
-    
-'''
-@login_required
-def book_event(request, id):
-    event = get_object_or_404(Event, id=id)
-
-    if not request.user.groups.filter(name='Participant').exists():
-        messages.error(request, "Only participants are allowed to book events.")
-        return redirect('home')
-
-    if request.user in event.participants.all():
-        event.participants.remove(request.user)
-        messages.info(request, "You have unbooked the event.")
-    else:
-        event.participants.add(request.user)
-        messages.success(request, "Event booked successfully.")
-
-    return redirect('home')
-'''
-
+ 
 
 class BookEvent(LoginRequiredMixin, View):
     def post(self, request, id):
